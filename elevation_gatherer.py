@@ -1,4 +1,5 @@
 import math
+import csv
 
 RADIUS_OF_EARTH = 6378.1
 
@@ -50,18 +51,26 @@ def distance_between_two_points(gps1, gps2):
 
 def main():
 
-    gps_point_start = (47.438933, -122.243732)
-    gps_point_end = (47.463129, -122.241822)
+    gps_point_start = (47.372560, -121.811126)
+    gps_point_end = (47.408756, -121.741541)
 
     distance = distance_between_two_points(gps_point_start, gps_point_end)
     bearing = bearing_between_two_points(gps_point_start, gps_point_end)
 
     number_of_points = int(distance / 30)
 
-    gps_points = [gps_point_start]
+    gps_points = []
+    gps_points.append(directional_point(gps_point_start, bearing))
+    bearing = bearing_between_two_points(gps_points[0], gps_point_end)
     for x in range(number_of_points):
-        gps_points.append(directional_point(gps_points[x], bearing))
+        next_point = directional_point(gps_points[x], bearing)
+        gps_points.append(next_point)
+        bearing = bearing_between_two_points(next_point, gps_point_end)
         x += 1
+
+    thecsv = csv.writer(open("map.csv", "w", newline=''))
+    for point in gps_points:
+        thecsv.writerow(point)
     pass
 
 if __name__ == "__main__":
