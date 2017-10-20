@@ -35,7 +35,7 @@ def bearing_between_two_points(gps1, gps2):
     x = math.cos(lat1) * math.sin(lat2) - (math.sin(lat1) * math.cos(lat2) * math.cos(diffLong))
     y = math.sin(diffLong) * math.cos(lat2)
 
-    initial_bearing = math.degrees(math.atan2(y, x))
+    initial_bearing = math.degrees(math.atan2(x, y))
     compass_bearing = (initial_bearing + 360) % 360
 
     return compass_bearing
@@ -56,6 +56,8 @@ def distance_between_two_points(gps1, gps2):
 def main():
     """
     http://www.movable-type.co.uk/scripts/latlong.html
+    skip getting all GPS points in first.  Get bearing and next gps point, then calc distance to end point again, rinse
+    repeat.
     """
 
     gps_point_start = (47.372560, -121.811126)
@@ -72,7 +74,7 @@ def main():
     for x in range(number_of_points):
         next_point = directional_point(gps_points[x], bearing)
         gps_points.append(next_point)
-        bearing = bearing_between_two_points(next_point, gps_point_end)
+        # bearing = bearing_between_two_points(next_point, gps_point_end)
         x += 1
 
     thecsv = csv.writer(open("map.csv", "w", newline=''))
