@@ -2,10 +2,10 @@ import math
 import csv
 
 RADIUS_OF_EARTH = 6378.1
+DISTANCE = .03
+
 
 def directional_point(gps_point, bearing):
-
-    DISTANCE = .03
 
     lat1 = math.radians(gps_point[0])
     lon1 = math.radians(gps_point[1])
@@ -23,13 +23,17 @@ def directional_point(gps_point, bearing):
 
 
 def bearing_between_two_points(gps1, gps2):
+    """
+    https://gist.github.com/jeromer/2005586
+
+    """
     lat1 = math.radians(gps1[0])
     lat2 = math.radians(gps2[0])
 
     diffLong = math.radians(gps2[1] - gps1[1])
 
+    x = math.cos(lat1) * math.sin(lat2) - (math.sin(lat1) * math.cos(lat2) * math.cos(diffLong))
     y = math.sin(diffLong) * math.cos(lat2)
-    x = (math.cos(lat1) * math.sin(lat2)) - (math.sin(lat1) * math.cos(lat2) * math.cos(diffLong))
 
     initial_bearing = math.degrees(math.atan2(y, x))
     compass_bearing = (initial_bearing + 360) % 360
@@ -50,6 +54,9 @@ def distance_between_two_points(gps1, gps2):
 
 
 def main():
+    """
+    http://www.movable-type.co.uk/scripts/latlong.html
+    """
 
     gps_point_start = (47.372560, -121.811126)
     gps_point_end = (47.408756, -121.741541)
@@ -71,7 +78,6 @@ def main():
     thecsv = csv.writer(open("map.csv", "w", newline=''))
     for point in gps_points:
         thecsv.writerow(point)
-    pass
 
 if __name__ == "__main__":
     main()
